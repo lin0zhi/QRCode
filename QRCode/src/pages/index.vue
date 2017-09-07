@@ -1,58 +1,69 @@
 <template>
 	<div id='index'>
     <!-- 左侧菜单 -->
-   
-    <!-- 右侧内容区 -->
-    <div class='right'>
-      <banner :is-view='isView' @toggleView='toggleView'></banner> 
-      <draggable :list='contentComponents' class='dragArea' :options="{group:'components'}"  @add="onAdd">
-        <div v-for ='element in contentComponents' :key='element.id' class='component'>
-          <component :is='element.component' :is-view='isView' :element-id='element.id' :prop-data='element.data' @elementChange='onChanges'>
-          </component>
-         <!--  <div> {{element}}</div> -->
+    <transition name='slideAwayleft'>
+      <div v-if='!isView'  class='left'>
+        <!-- 编辑菜单 -->
+        <div v-if='!isView'>
+          <el-row class='profile'>
+          <img :src='profile'><br>
+          <span>Lily king</span>
+          </el-row>
+          <!-- <页面以及模版树> -->
+          <el-row>
+            <tree :impt='pageTree'  @node-click='handleNodeClick'>ddd
+            </tree>
+            <tree :impt='moduleTree'  @node-click='handleNodeClick'>
+            </tree>
+          </el-row>
+          <!-- 控件盒子 -->
+          <el-row>
+            <el-collapse accordion>
+              <el-collapse-item title='基本控件' name='1'>
+                <draggable class='dragArea' :list='baseComponents' :options="{group:{name:'components', pull: 'clone',put: false}}" >
+                    <div v-for ='element in baseComponents' :key='element.id'>
+                      {{element.name}}
+                    </div>
+                </draggable>
+              </el-collapse-item>
+              <el-collapse-item title='自定义控件控件' name='2'>
+              </el-collapse-item>
+            </el-collapse>
+          </el-row>
         </div>
-      </draggable> 
-    </div>
-    <div v-if='!isView'  class='left'>
-      <!-- 编辑菜单 -->
-      <div v-if='!isView'>
-        <el-row >
-          <el-menu mode='horizontal'>
-            <el-menu-item index='1'>
-              <el-button size='small' @click='giveName'>
-                <i class='iconfont icon-tianjia'></i>
-              </el-button>
-            </el-menu-item>
-            <el-menu-item index='2'>
-              <el-button size='small' @click='removeNode'>
-                <i class='iconfont icon-shanchu'></i>
-              </el-button>
-            </el-menu-item>
-          </el-menu>
-        </el-row>
-        <!-- <页面以及模版树> -->
-        <el-row>
-          <el-tree :data='pageTree' :highlight-current='true' @node-click='handleNodeClick'>
-          </el-tree>
-          <el-tree :data='moduleTree' :highlight-current='true' @node-click='handleNodeClick'>
-          </el-tree>
-        </el-row>
-        <!-- 控件盒子 -->
-        <el-row>
-          <el-collapse accordion>
-            <el-collapse-item title='基本控件' name='1'>
-              <draggable class='dragArea' :list='baseComponents' :options="{group:{name:'components', pull: 'clone',put: false}}" >
-                  <div v-for ='element in baseComponents' :key='element.id'>
-                    {{element.name}}
-                  </div>
-              </draggable>
-            </el-collapse-item>
-            <el-collapse-item title='自定义控件控件' name='2'>
-            </el-collapse-item>
-          </el-collapse>
-        </el-row>
+      </div>
+    </transition>
+    <div class='middle'>
+      <!-- 顶部菜单 -->
+      <div class='topMenu'>
+        <ul class='navLeft'>
+          <li><a href='#/home'>主页</a></li>
+          <li>登录</li>
+        </ul>
+        <ul class='navRight'>
+          <li>
+            <button id='save'>保存</button>
+          </li>
+          <li>
+            <button id='preview' @click='toggleView'>预览</button>
+          </li>
+        </ul>
+      </div>
+      <!-- 右侧内容区 -->
+      <div class='content'>
+        <!-- <banner :is-view='isView' @toggleView='toggleView'></banner>  -->
+        <draggable :list='contentComponents' class='dragArea' :options="{group:'components'}"  @add="onAdd">
+          <div v-for ='element in contentComponents' :key='element.id' class='component'>
+            <component :is='element.component' :is-view='isView' :element-id='element.id' :prop-data='element.data' @elementChange='onChanges'>
+            </component>
+           <!--  <div> {{element}}</div> -->
+          </div>
+        </draggable> 
       </div>
     </div>
+    <transition name='slideAway'>
+      <div class='right' v-if='!isView'></div>
+    </transition>
     <!-- 一些弹窗 -->
     <el-dialog title='创建新的页面' :visible.sync='newPageVisible' >
       <el-form  :rules='rules' ref='ruleForm1'>
@@ -65,8 +76,6 @@
         <el-button type="primary" @click="addPage">确 定</el-button>
       </div>
     </el-dialog>
-
-      <bottom></bottom>
   </div>
 </template>
 <script>
@@ -78,7 +87,7 @@ import facts from '../components/facts'
 import baseMessage from '../components/baseMessage'
 import contact from '../components/contact'
 import links from '../components/outerLink'
-import banner from '../components/banner'
+import tree from '../components/tree'
 export default{
   name: 'index',
   components: {
@@ -90,25 +99,30 @@ export default{
     baseMessage,
     contact,
     links,
-    banner
+    tree
   },
   data () {
     return {
+       // 用户图片
+      profile: require('./../assets/下载.png'),
       // 页面数
-      pageTree: [{
+      pageTree: {
         id: 'pageTree',
         label: '我的页面',
         children: [{
           label: '页面1'
-        }]
-      }],
+        }, {
+          label: '页面2'
+        }
+        ]
+      },
       // 模板树
-      moduleTree: [{
+      moduleTree: {
         label: '我的模版',
         children: [{
           label: '模版1'
         }]
-      }],
+      },
       // 当前点击的tree节点
       currentNode: null,
       // 弹窗数据
@@ -257,7 +271,10 @@ export default{
   }
 }
 </script>
-<style lang='less' scoped>
+<style lang='less' >
+  @background-color:#1D2C42;
+  @slideColor:#26618D;
+  @topMenu:#F7F7F7;
   .dragArea{
   }
   .component{
@@ -269,29 +286,143 @@ export default{
   #index{
     position: relative;
     min-height: 100%;
-    background-color: #EDF7FF;
-    width: 70%;
-    margin-left: 15%;
-    .left{
-      height: 100%;
-      width: 10%;
-      position: fixed;
-      top:0px;
-      background-color: #6E719B;
-    }
-    .right{
+    //background-color: #4E6D8F;
+    background: -webkit-linear-gradient(left, white 0,white 10%,#F7F7F7 0,#F7F7F7 90%,white 0,white );
+    width: 100%;
+    top:-10px;
+    min-width: 600px;
+    color:white;
+    //margin-left: 15%;
+    .middle{
+      width: 80%;
+      position: relative;
+      left: 10%;
+      min-width: 400px;
+      // .topMenu:after{
+      //   content: '';
+      //   background-color: @slideColor;
+      //   position: absolute;
+      //   z-index: -1;
+      //   -webkit-filter:blur(2px);
+      //   //opacity: 0.8;
+      //   left: 0px;
+      //   right: 0px;
+      //   top:0px;
+      //   bottom: 0px;
+      // }
+      .topMenu{
+        position: relative;
+        height:117px;
+        vertical-align: middle;
+        border-bottom: 2px solid #5E90E3;
+        z-index: 1;
+        background:url('./../assets/banner.jpg') no-repeat;
+         background-size: cover;
+        //background-color:transparent;
+        button{
+          background-color: transparent;
+          border: none;
+          color: white;
+          font-size: 1em;
+        }
+        ul{
+          list-style: none;
+          display: inline-block;
+          li{
+            float: left;
+            margin-right: 20px;
+          }
+        }
+        .navLeft{
+          //position: absolute;
+          position: relative;
+          left:-40%;
+        }
+        .navRight{
+          position: absolute;
+          right:0px;
+          color:white;
+        }
+     }
+     .content{
       height: 100%;
       position: relative;
       left:10%;
-      background-color: #EDF7FF;
-      width: 90%;
-    }
-    .bottom{
-      position: relative;
-      top: 800px;
-      width:100%;
+      background-color:transparent;
+      width: 80%;
+      min-width: 400px;
     }
   }
-  
+    .left{
+      height: 100%;
+      width: 10%;
+      min-width: 90px;
+      position: fixed;
+      top:0px;
+      border-radius: 15px 0px 5px 0px;
+      background: @slideColor;
+      //webkit-linear-gradient(top, #EEEEF0 30%,#2A455A);
+      //background-color: @background-color;
+      box-shadow: 2px 1px 1px;
+      button{
+        background-color: transparent;
+        border: none;
+        //color: white;
+      }
+      .profile{
+        margin-top: 20px;
+        margin-bottom: 20px;
+        //color:white;
+        img{
+        width: 50px;
+        height: 50px;
+        border-radius: 25px;
+        }
+      }
+      
+      // .el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
+      //     background-color:#6E719B;
+      // }
+      .el-collapse{
+        border: none;
+      }
+      .el-collapse-item__wrap{
+        margin-top: -5px;
+      }
+      .el-collapse-item__header,.el-collapse-item__wrap{
+        background-color: @background-color;
+        color:white;
+        .el-collapse-item__content{
+          color:white;
+        }
+      }
+    }
+    .right{
+       height: 100%;
+       width: 10%;
+       min-width: 90px;
+       position: fixed;
+       top:0px;
+       left:90%;
+       margin-left: -5px;
+       border-radius: 0px 15px 5px 0px;
+       background: @slideColor;
+    }
+    .slideAway-enter-active,.slideAwayleft-enter-active,.slideAwayleft-leave-active,.slideAway-leave-active{
+      transition:all 1s ease;
+    }
+    .slideAway-enter-to,.slideAway-leave,.slideAwayleft-enter-to,.slideAwayleft-leave{
+      opacity: 1;
+
+    }
+    .slideAway-enter,.slideAway-leave-to{
+      opacity: 0;
+      transform:translateX(100%);
+    }
+    .slideAwayleft-enter,.slideAwayleft-leave-to{
+      opacity: 0;
+      transform:translateX(-100%);
+    }
+  }
 
 </style>

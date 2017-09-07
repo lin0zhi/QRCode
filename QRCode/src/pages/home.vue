@@ -1,101 +1,306 @@
 <template>
 	<div class='home'>
-  <div class='banner'></div>
-    <!-- 中间的图标 -->
-    <div class='imgbox'>
-      <img src='./../assets/下载.png'>
-    </div>
-    <div class='topSide animated slideOutUp'>
-      <div class='topLeft'>
+    <div class='area1'>
+    <ul>
+      <li>主页</li>
+      <li><a href='#/index'>创建页面</a></li>
+      <li>登录</li>
+    </ul>
+      <div class='slogan'>
+        <h1>
+          {{slogan}}
+        </h1>
       </div>
-      <div class='topRight'>
+      <div class='phone'>
+        <img src='./../assets/phone1.png'>
+        <div class='phoneScreen'>
+          <div class='imgbox'>
+             <div class='carousel'>
+              <img v-for='image in phoneImage' :key='image' :src='image.imgSrc'>
+            </div>
+             <div class='carouse2'>
+              <img v-for='image in phoneImage' :key='image' :src='image.imgSrc'>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-
-     <div class='bottomSide animated fadeOutDown'>
-       <div class='bottomLeft'> 
-       </div>
-       <div class='bottomRight'> 
-       </div>
-    </div> 
+    <div class='area2Bg'>
+      <div class='area2'>
+        <h1 class='title bigtitle'>
+          <span class='lefttitle'>如何</span><br><span clsass='righttitle'>使用</span>
+        </h1>
+        <div class='howto'>
+          <div class='guide'>
+            <h1>01</h1>
+            <h2>登录</h2>
+            <p>如果你还没有账号，即可注册账号,已有账号，登录。</p>
+          </div>
+          <div class='guide'>
+            <h1>02</h1>
+            <h2>创建页面</h2>
+            <p>为你提供拖拽式页面创建方式，使你能够轻松创建属于你自己的产品页面。</p>
+          </div>
+          <div class='guide'>
+            <h1>03</h1>
+            <h2>获取二维码</h2>
+            <p>页面创建成功后，为你的页面生成二维码，成为你产品的专属名片。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class='area3Bg'>
+      <div class='area3'>
+        <h1 class='bigtitle'>用作</h1>
+        <div class='story'>
+          <img :src='storyImage1'>
+          <div class='rightContent'>
+            <h2>记录产品信息</h2>
+            <p>通过拖拽组件构建产品信息页面，我们为你提供诸如营养成分表、产品生产信息、联系方式、多种外部链接。简单而灵活的构建产品信息页面，使你的客户能够随时获取你的产品信息。</p>
+          </div>
+        </div>
+        <div class='story'>
+          <img :src='storyImage1'>
+          <div class='rightContent'>
+            <h2>记录产品信息</h2>
+            <p>通过拖拽组件构建产品信息页面，我们为你提供诸如营养成分表、产品生产信息、联系方式、多种外部链接。简单而灵活的构建产品信息页面，使你的客户能够随时获取你的产品信息。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class='area4Bg'>
+      <div class='area4'>
+        <h1 class='bigtitle'>保持联系</h1>
+        <ul>
+          <li>lin.chih@outlook.com</li>
+          <li>微信号:eycnryf.weixin</li>
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
 <script>
+  export default{
+    name: 'home',
+    data () {
+      return {
+        slogan: '使你的产品信息随时可以访问,仅需一步,仅需一个二维码',
+        storyImage1: require('./../assets/bulid.jpg'),
+        phoneImage: [
+          {
+            imgSrc: require('./../assets/下载.png')
+          },
+          {
+            imgSrc: require('./../assets/product.jpg')
+          },
+          {
+            imgSrc: require('./../assets/下载.png')
+          }
+        ]
+      }
+    }
+  }
 </script>
-<style lang='less'>
+<style lang='less' >
+  body{
+    background-color: #00C8DC;
+  }
   .home{
-    width: 100%;
-    height:100%;
-    position: relative;
-  }
-  .imgbox{
-    width:200px;
-    height: 200px;
-    position: absolute;
-    left:0px;
-    right:0px;
-    top:0px;
-    bottom: 0px;
-    margin:auto;
-    transform: rotate(45deg);
-    box-shadow: -2px -2px 2px grey;
-    z-index:2;
-  }
-  img{
     width:100%;
-    height: 100%;
+    margin: auto;
+    .bigtitle{
+      font-size: 4em;
+      font:normal normal 4em MingLiU,sans-serif;
+    }
   }
-  .topSide{
-    height: 50%;
-    background-color: #8FB65D;
-    filter:blur(5px);
-    opacity: 0.7;
+  .area1{
+    background-color: transparent;
+    height: 770px;
+    width: 60%;
     position: relative;
-    .topLeft{
-      width: 144px;
-      height: 144px;
-      position: absolute;
-      bottom: 0px;
-      left:50%;
-      margin-left: -144px;
-      background: linear-gradient(135deg, transparent 49%, white 51%) ;
+    left:20%;
+    color: white;
+    ul{
+      list-style: none;
+      display: inline-block;
+
+      li{
+        float: left;
+        margin-right: 20px;
+      }
     }
-    .topRight{
-      width: 144px;
-      height: 144px;
+    .slogan{
+      width:50%;
+      float:left;
+      margin-top: 50px;
+      margin-right: 40px;
+      h1{
+        font-size: 76px;
+      }
+    }
+    .phone{
       position: absolute;
-      bottom: 0px;
-      left:50%;
-      background: linear-gradient(45deg,  white 49%, transparent 51%) ;
+      top:100px;
+      left:60%;
+      overflow: hidden;
+      z-index: 2;
+      .phoneScreen{
+        position: absolute;
+        background-color: grey;
+        top:100px;
+        bottom:102px;
+        left:20px;
+        right:20px;
+        .imgbox{
+          position: absolute;
+          top: 50%;
+          margin-top: -189.5px;
+          width: 379px;
+          height: 379px;
+          overflow: hidden;
+          img{
+            width: 379px;
+            height: 350px;
+            display: inline;
+          }
+          .carousel{
+            width: 1137px;
+            position: absolute;
+            -webkit-animation:change 5s linear infinite;
+          }
+          .carouse2{
+            width: 758px;
+            position: absolute;
+            top:0px;
+            left:758px;
+           -webkit-animation:changes 5s 2s linear infinite;
+          }
+          @-webkit-keyframes change {
+            0% {
+              left: 0px;
+            }
+            25% {
+              left: 0px;
+            }
+            35%{
+              left: -379px;
+            }
+            60% {
+              left: -379px;
+            }
+            70%{
+              left: -758px;
+            }
+            100%{
+              left: -758px;
+            }
+          }
+        }
+        
+      }
     }
   }
-  .bottomSide{
-    height: 50%;
-    top:0px;
-    background-color: blue;
-    position: relative;
-    filter:blur(5px);
-    opacity: 0.7;
-    .bottomLeft{
-      width: 144px;
-      height: 144px;
-      position: absolute;
-      top: 0px;
-      left:50%;
-      margin-left: -144px;
-      background: linear-gradient(45deg, transparent 49%,   white 51%) ;
+  .area2Bg{
+     width:100%;
+     background-color: white;
+    .area2{
+      position: relative;
+      width: 60%;
+      left: 20%;
+      color: #00C8DC;
+      //z-index: -1;
+      .title{
+        width: 360px;
+        position: relative;
+        left: -50%;
+        margin-left: 390px;
+        .lefttitle{
+          position: absolute;
+          left: 0px;
+        }
+        .righttitle{
+          position: absolute;
+          right: 0px;
+        }
+      }
+      .howto{
+        width: 100%;
+        display: inline-block;
+        margin-top: -100px;
+        .guide{
+          float: left;
+          width: 20%;
+          margin-left: 6%;
+          margin-right: 6%;
+          h1{
+             font:normal normal 150px MingLiU,sans-serif;
+             border-bottom:5px solid #00C8DC;
+          }
+          h2{
+            font:normal normal 30px MingLiU,sans-serif;
+            margin-top: -50px;
+          }
+        }
+      }
+      
     }
-    .bottomRight{
-      width: 144px;
-      height: 144px;
-      position: absolute;
-      top: 0px;
-      left:50%;
-      background: linear-gradient(135deg, white 49%, transparent 51%) ;
-    }
-    // 上部分动画
   }
-   .animated{
-    animation-duration:8s; 
-   }
-</style>
+  .area3Bg{
+    width: 100%;
+    background-color: #5E90E3;
+    .area3{
+      position: relative;
+      width: 60%;
+      left: 20%;
+      color: white;
+      h1{
+        margin-top: 0px;
+        position: relative;
+        left:-50%;
+        margin-left: 120px;
+      }
+      .story{
+        display: inline-block;
+        margin-bottom: 50px;
+        img{
+          width:250px;
+          height: 250px; 
+          float: left;
+          margin-right: 80px;
+          border-radius: 125px;
+        }
+        .rightContent{
+          h2{
+             font:normal normal 30px MingLiU,sans-serif;
+          }
+        }
+      }
+      
+    }
+  }
+  .area4Bg{
+    width: 100%;
+    background-color: white;
+    .area4{
+      width: 60%;
+      margin-left:20%;
+      color:#5E90E3;
+      h1{
+        margin-top: 0px;
+        position: relative;
+        left:-50%;
+        margin-left: 240px;
+      }
+      ul{
+        list-style: none;
+        display: inline-block;
+        font-size: 1.5em;
+        padding-left: 0px;
+        li{
+          float: left;
+          margin-right: 50px;
+        }
+      }
+    }
+  }
+</style> 

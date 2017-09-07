@@ -4,9 +4,11 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import element from 'element-ui'
+import resource from 'vue-resource'
 import 'element-ui/lib/theme-default/index.css'
 // import login from '../pages/login'
 Vue.use(element)
+Vue.use(resource)
 Vue.config.productionTip = false
 /* eslint-disable no-new */
 new Vue({
