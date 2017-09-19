@@ -30,6 +30,7 @@ export default{
   .story{
     width: 50%;
     margin-left: 25%;
+    color: black;
   }
   textarea{
     background-color: transparent;

@@ -1,11 +1,17 @@
 <template>
 	<div class='home'>
+    <div class='topMenu'>
+      <ul>
+        <li class='current'>主页</li>
+        <li><a href='#/index'>创建页面</a></li>
+        <li>
+          <button v-if='glob.isLoged' @click='onShowProfile' class='profile' :style="{'background-image':'url(glob.profile) no-repeat'}"></button>
+          <button v-else class='profile' @click=' onLog'></button>
+        </li>
+      </ul>
+    </div>
     <div class='area1'>
-    <ul>
-      <li>主页</li>
-      <li><a href='#/index'>创建页面</a></li>
-      <li>登录</li>
-    </ul>
+    
       <div class='slogan'>
         <h1>
           {{slogan}}
@@ -85,7 +91,9 @@
     data () {
       return {
         slogan: '使你的产品信息随时可以访问,仅需一步,仅需一个二维码',
-        storyImage1: require('./../assets/bulid.jpg'),
+        storyImage1: require('../assets/bulid.jpg'),
+        // 用户图片
+        profile: require('./../assets/下载.png'),
         phoneImage: [
           {
             imgSrc: require('./../assets/下载.png')
@@ -98,10 +106,22 @@
           }
         ]
       }
+    },
+    methods: {
+      onLog: function () {
+        this.$router.push('/login')
+      },
+      onShowProfile: function () {
+        this.$router.push('/profile')
+      }
+    },
+    mounted: function () {
+      if (this.glob.isLoged) {
+      }
     }
   }
 </script>
-<style lang='less' >
+<style lang='less' scoped>
   body{
     background-color: #00C8DC;
   }
@@ -111,6 +131,52 @@
     .bigtitle{
       font-size: 4em;
       font:normal normal 4em MingLiU,sans-serif;
+    }
+    .topMenu{
+      margin: -10px -10px 0px -10px;
+      height:117px;
+      line-height: 117px;
+      opacity: 0.7;
+      background-image: url('./../assets/banner.jpg');
+      background-repeat: no-repeat;
+      background-size: cover;
+      ul{
+        float:right;
+        list-style: none;
+        display: inline-block;
+        font-size: 1.2em;
+        margin: 0px;
+        padding-left: 0px;
+        li{
+          float: left;
+          margin-right:30px;
+          a{
+            text-decoration: none;
+          }
+          a:visited{
+            text-decoration: none;
+            color:black;
+          }
+          button{
+            background-color: transparent;
+            font-size: 20px;
+            border: none;
+            color: black;
+          }
+          .profile{
+            width: 80px;
+            height: 80px;
+            border-radius: 40px;
+            vertical-align: middle;
+            background: url('./../assets/banner.jpg') no-repeat;
+            background-size: cover;
+            
+          }
+        }
+        .current{
+          text-decoration: 2px white solid;
+        }
+      }
     }
   }
   .area1{
@@ -126,7 +192,15 @@
 
       li{
         float: left;
-        margin-right: 20px;
+        margin-right: 30px;
+        a{
+          color: white;
+          text-decoration: none;
+        }
+        a:visited{
+          color: white;
+          text-decoration: none;
+        }
       }
     }
     .slogan{
@@ -247,7 +321,7 @@
   }
   .area3Bg{
     width: 100%;
-    background-color: #5E90E3;
+    background-color: #336699;
     .area3{
       position: relative;
       width: 60%;
@@ -290,16 +364,6 @@
         position: relative;
         left:-50%;
         margin-left: 240px;
-      }
-      ul{
-        list-style: none;
-        display: inline-block;
-        font-size: 1.5em;
-        padding-left: 0px;
-        li{
-          float: left;
-          margin-right: 50px;
-        }
       }
     }
   }

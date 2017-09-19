@@ -11,6 +11,11 @@ Vue.use(element)
 Vue.use(resource)
 Vue.config.productionTip = false
 /* eslint-disable no-new */
+Vue.prototype.glob = {
+  isLoged: false,
+  userName: '',
+  profile: {}
+}
 new Vue({
   el: '#app',
   router,

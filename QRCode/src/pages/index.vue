@@ -1,81 +1,75 @@
 <template>
 	<div id='index'>
-    <!-- 左侧菜单 -->
-    <transition name='slideAwayleft'>
-      <div v-if='!isView'  class='left'>
-        <!-- 编辑菜单 -->
-        <div v-if='!isView'>
-          <el-row class='profile'>
-          <img :src='profile'><br>
-          <span>Lily king</span>
-          </el-row>
-          <!-- <页面以及模版树> -->
-          <el-row>
-            <tree :impt='pageTree'  @node-click='handleNodeClick'>ddd
-            </tree>
-            <tree :impt='moduleTree'  @node-click='handleNodeClick'>
-            </tree>
-          </el-row>
-          <!-- 控件盒子 -->
-          <el-row>
-            <el-collapse accordion>
-              <el-collapse-item title='基本控件' name='1'>
-                <draggable class='dragArea' :list='baseComponents' :options="{group:{name:'components', pull: 'clone',put: false}}" >
-                    <div v-for ='element in baseComponents' :key='element.id'>
-                      {{element.name}}
-                    </div>
-                </draggable>
-              </el-collapse-item>
-              <el-collapse-item title='自定义控件控件' name='2'>
-              </el-collapse-item>
-            </el-collapse>
-          </el-row>
+    <el-row class='topMenu'>
+      <el-col span=3>
+        <a href='#/home'>主页</a>
+      </el-col>
+      <el-col span=2 push=14>
+        <button id='save'>保存</button>
+      </el-col>
+      <el-col span=2 push=14>
+        <button id='preview' @click='toggleView'>预览</button>
+      </el-col>
+      <el-col span=3 push=14>
+        <button v-if='glob.isLoged' class='profile' @click='onShowProfile' :style="{'background-image':'url(glob.profile) no-repeat'}"></button>
+         <button v-else class='profile' @click='onLog'></button>
+        <!-- <img :src='profile'> -->
+      </el-col>
+    </el-row>
+    <el-row>
+      <transition name='slideAwayleft'>
+        <el-col span=3  class='left' v-if='!isView' >
+          <!-- 左侧菜单 -->
+            <div>
+              <!-- 编辑菜单 -->
+              <div v-if='!isView'>
+                <el-row >
+                </el-row>
+                <!-- <页面以及模版树> -->
+                <el-row>
+                  <tree :impt='pageTree'  @onAdd='addPage'>
+                  </tree>
+                  <tree :impt='moduleTree'  @node-click='handleNodeClick'>
+                  </tree>
+                </el-row>
+                <!-- 控件盒子 -->
+                <el-row>
+                  <el-collapse accordion>
+                    <el-collapse-item title='基本控件' name='1'>
+                      <draggable class='dragArea' :list='baseComponents' :options="{group:{name:'components', pull: 'clone',put: false}}" >
+                          <div v-for ='element in baseComponents' :key='element.id'>
+                            {{element.name}}
+                          </div>
+                      </draggable>
+                    </el-collapse-item>
+                    <el-collapse-item title='自定义控件控件' name='2'>
+                    </el-collapse-item>
+                  </el-collapse>
+                </el-row>
+              </div>
+            </div>
+        </el-col>
+      </transition>
+      <el-col span=18 push=3 class='middle'>
+        <!-- 右侧内容区 -->
+        <div class='content'>
+          <!-- <banner :is-view='isView' @toggleView='toggleView'></banner>  -->
+          <draggable :list='contentComponents' class='dragArea' :options="{group:'components'}"  @add="onAdd">
+            <div v-for ='element in contentComponents' :key='element.id' class='component'>
+              <component :is='element.component' :is-view='isView' :element-id='element.id' :prop-data='element.data' @elementChange='onChanges'>
+              </component>
+             <!--  <div> {{element}}</div> -->
+            </div>
+          </draggable> 
         </div>
-      </div>
-    </transition>
-    <div class='middle'>
-      <!-- 顶部菜单 -->
-      <div class='topMenu'>
-        <ul class='navLeft'>
-          <li><a href='#/home'>主页</a></li>
-          <li>登录</li>
-        </ul>
-        <ul class='navRight'>
-          <li>
-            <button id='save'>保存</button>
-          </li>
-          <li>
-            <button id='preview' @click='toggleView'>预览</button>
-          </li>
-        </ul>
-      </div>
-      <!-- 右侧内容区 -->
-      <div class='content'>
-        <!-- <banner :is-view='isView' @toggleView='toggleView'></banner>  -->
-        <draggable :list='contentComponents' class='dragArea' :options="{group:'components'}"  @add="onAdd">
-          <div v-for ='element in contentComponents' :key='element.id' class='component'>
-            <component :is='element.component' :is-view='isView' :element-id='element.id' :prop-data='element.data' @elementChange='onChanges'>
-            </component>
-           <!--  <div> {{element}}</div> -->
-          </div>
-        </draggable> 
-      </div>
-    </div>
-    <transition name='slideAway'>
-      <div class='right' v-if='!isView'></div>
-    </transition>
-    <!-- 一些弹窗 -->
-    <el-dialog title='创建新的页面' :visible.sync='newPageVisible' >
-      <el-form  :rules='rules' ref='ruleForm1'>
-        <el-form-item label='页面名称'  prop = 'same'>
-          <el-input v-model = 'dialog.name' ></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click='newPageVisible = false'>取 消</el-button>
-        <el-button type="primary" @click="addPage">确 定</el-button>
-      </div>
-    </el-dialog>
+      </el-col>
+      <transition name='slideAway'>
+        <el-col v-if='!isView' span=3 push=21  class='right'>
+          <div></div>
+        </el-col>
+      </transition>
+    </el-row>
+    <dialogs v-if='newPageVisible' :pages='pageTree' @cancelAddPage='cancelAddPage'></dialogs>
   </div>
 </template>
 <script>
@@ -88,6 +82,7 @@ import baseMessage from '../components/baseMessage'
 import contact from '../components/contact'
 import links from '../components/outerLink'
 import tree from '../components/tree'
+import dialogs from '../components/dialog'
 export default{
   name: 'index',
   components: {
@@ -99,7 +94,8 @@ export default{
     baseMessage,
     contact,
     links,
-    tree
+    tree,
+    dialogs
   },
   data () {
     return {
@@ -109,6 +105,7 @@ export default{
       pageTree: {
         id: 'pageTree',
         label: '我的页面',
+        url: '/addPage',
         children: [{
           label: '页面1'
         }, {
@@ -119,23 +116,17 @@ export default{
       // 模板树
       moduleTree: {
         label: '我的模版',
+        url: '/addModule',
         children: [{
           label: '模版1'
         }]
       },
       // 当前点击的tree节点
       currentNode: null,
-      // 弹窗数据
-      dialog: {name: null},
       // 是否显示弹窗
       newPageVisible: false,
       // 是否预览模式
       isView: false,
-      rules: {
-        same: [
-        {validator: this.validateSame, trigger: 'blur'}
-        ]
-      },
       // 拖拽组件
       // 基本组件
       baseComponents: [
@@ -192,33 +183,22 @@ export default{
     console.log(typeof (this.baseComponents[0].data))
   },
   methods: {
+    onLog: function () {
+      this.$router.push('/login')
+    },
+    onShowProfile: function () {
+      this.$router.push('/profile')
+    },
     handleNodeClick: function (e, m, n) {
       this.currentNode = m
     },
-    // 弹窗命名新页面
-    giveName: function () {
-      // console.log(this.currentNode.parent.parent.data[0].id)
-      // console.log(this.currentNode.data)
-      if (this.currentNode.parent.parent && this.currentNode.parent.parent.data[0].id === 'pageTree') {
-        this.newPageVisible = true
-        this.dialog.name = '页面' + (this.currentNode.parent.parent.data[0].children.length + 1)
-      } else if (this.currentNode.data.id === 'pageTree') {
-        this.newPageVisible = true
-        this.dialog.name = '页面' + (this.currentNode.data.children.length + 1)
-      }
+    // 关闭新页面对话框
+    cancelAddPage: function () {
+      this.newPageVisible = false
     },
     // 弹窗确定是添加新页面
     addPage: function () {
-      this.$refs['ruleForm1'].validate((valid) => {
-        if (valid) {
-          if (this.currentNode.parent.parent) {
-            this.currentNode.parent.data.children.push({label: this.dialog.name})
-          } else {
-            this.currentNode.data.children.push({label: this.dialog.name})
-          }
-          this.newPageVisible = false
-        }
-      })
+      this.newPageVisible = true
     },
     // 删除节点
     removeNode: function () {
@@ -229,23 +209,6 @@ export default{
           }
         }
       }
-    },
-    // 验证名称输入是否合法
-    validateSame: function (rule, value, callback) {
-      var children = this.currentNode.parent.parent ? this.currentNode.parent.data.children : this.currentNode.data.children
-      console.log(children)
-      if (!this.dialog.name) {
-        return callback(new Error('名称不能为空'))
-      }
-      if (this.dialog.name.length < 2 || this.dialog.name.length > 15) {
-        return callback(new Error('名称不能小于2个字符或大于15个字符'))
-      }
-      for (var i = 0; i < children.length; i++) {
-        if (children[i].label === this.dialog.name) {
-          return callback(new Error('名称不能相同'))
-        }
-      }
-      callback()
     },
     // 添加组建到页面时触发
     onAdd: function (e) {
@@ -271,14 +234,15 @@ export default{
   }
 }
 </script>
-<style lang='less' >
+<style lang='less' scoped>
   @background-color:#1D2C42;
-  @slideColor:#26618D;
+  @slideColor:#CCCCCC;
   @topMenu:#F7F7F7;
   .dragArea{
   }
   .component{
     margin-bottom: 40px;
+    color: black;
   }
   .el-tree .el-collapse{
     background-color: transparent;
@@ -287,102 +251,71 @@ export default{
     position: relative;
     min-height: 100%;
     //background-color: #4E6D8F;
-    background: -webkit-linear-gradient(left, white 0,white 10%,#F7F7F7 0,#F7F7F7 90%,white 0,white );
+    //background: -webkit-linear-gradient(left, white 0,white 10%,#F7F7F7 0,#F7F7F7 90%,white 0,white );
     width: 100%;
-    top:-10px;
+    margin: -10px -10px 0px -10px;
     min-width: 600px;
     color:white;
-    //margin-left: 15%;
-    .middle{
-      width: 80%;
-      position: relative;
-      left: 10%;
-      min-width: 400px;
-      // .topMenu:after{
-      //   content: '';
-      //   background-color: @slideColor;
-      //   position: absolute;
-      //   z-index: -1;
-      //   -webkit-filter:blur(2px);
-      //   //opacity: 0.8;
-      //   left: 0px;
-      //   right: 0px;
-      //   top:0px;
-      //   bottom: 0px;
-      // }
-      .topMenu{
-        position: relative;
-        height:117px;
-        vertical-align: middle;
-        border-bottom: 2px solid #5E90E3;
-        z-index: 1;
-        background:url('./../assets/banner.jpg') no-repeat;
-         background-size: cover;
+    .topMenu{
+      height:117px;
+      line-height: 117px;
+      opacity: 0.7;
+      border-bottom: 2px solid #5E90E3;
+      font-size: 20px;
+      margin-right: -20px;
+      margin-bottom: 0px;
+      z-index: 1;
+      background:url('./../assets/banner.jpg') no-repeat;
+      background-size: cover;
         //background-color:transparent;
+      .el-col{
+        list-style: none;
+        display: inline-block;
+        margin: 0px;
         button{
           background-color: transparent;
+          font-size: 20px;
           border: none;
-          color: white;
-          font-size: 1em;
+          color: black;
         }
-        ul{
-          list-style: none;
-          display: inline-block;
-          li{
-            float: left;
-            margin-right: 20px;
-          }
+        a{
+          color: black;
+          text-decoration: none;
         }
-        .navLeft{
-          //position: absolute;
-          position: relative;
-          left:-40%;
+        a:visited{
+          text-decoration: none;
+          color:black;
         }
-        .navRight{
-          position: absolute;
-          right:0px;
-          color:white;
+        .profile{
+          width: 80px;
+          height: 80px;
+          border-radius: 40px;
+          vertical-align: middle;
+          background: url('./../assets/banner.jpg') no-repeat;
+          background-size: cover;
+          
         }
-     }
-     .content{
-      height: 100%;
-      position: relative;
-      left:10%;
-      background-color:transparent;
-      width: 80%;
-      min-width: 400px;
-    }
-  }
-    .left{
-      height: 100%;
-      width: 10%;
-      min-width: 90px;
-      position: fixed;
-      top:0px;
-      border-radius: 15px 0px 5px 0px;
-      background: @slideColor;
-      //webkit-linear-gradient(top, #EEEEF0 30%,#2A455A);
-      //background-color: @background-color;
-      box-shadow: 2px 1px 1px;
-      button{
-        background-color: transparent;
-        border: none;
-        //color: white;
       }
-      .profile{
-        margin-top: 20px;
-        margin-bottom: 20px;
-        //color:white;
+      /*.profile{
         img{
         width: 50px;
         height: 50px;
         border-radius: 25px;
         }
+      }*/
+    }
+    //margin-left: 15%;
+    .left{
+      height: 100%;
+      min-width: 90px;
+      position: fixed;
+      border-radius: 0px 5px 5px 0px;
+      background: @slideColor;
+      button{
+        background-color: transparent;
+        border: none;
+        //color: white;
       }
-      
-      // .el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
-      //     background-color:#6E719B;
-      // }
       .el-collapse{
         border: none;
       }
@@ -397,16 +330,29 @@ export default{
         }
       }
     }
+    .middle{
+      min-width: 400px;
+     .content{
+      height: 100%;
+      position: relative;
+      left:10%;
+      background-color:transparent;
+      width: 80%;
+      min-width: 400px;
+    }
+  }
     .right{
        height: 100%;
-       width: 10%;
        min-width: 90px;
        position: fixed;
-       top:0px;
-       left:90%;
        margin-left: -5px;
-       border-radius: 0px 15px 5px 0px;
+       border-radius: 5px 0px 0px 5px;
        background: @slideColor;
+    }
+    .dialog{
+      position: absolute;
+      left: 30%;
+      //margin-left: -20%;
     }
     .slideAway-enter-active,.slideAwayleft-enter-active,.slideAwayleft-leave-active,.slideAway-leave-active{
       transition:all 1s ease;

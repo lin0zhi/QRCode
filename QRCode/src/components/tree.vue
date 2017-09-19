@@ -12,8 +12,9 @@
    <transition name='expand'>
        <div class='content' v-if='isExpand'>
           <span v-for='item in impt.children' class='item'>{{item.label}}</span>
+          <button @click='onAdd'>新增</button>
        </div>
-     </transition>
+    </transition>
   </div>
 </template>
 <script >
@@ -22,19 +23,23 @@
     props: ['impt'],
     data () {
       return {
+        // 是否展开
         isExpand: false
       }
     },
     methods: {
       expand: function () {
         this.isExpand = !this.isExpand
+      },
+      onAdd: function () {
+        this.$emit('onAdd')
       }
     }
   }
 </script>
 <style lang='less'>
-  @bgcolor: #253F51;
-  @color: white;
+  @bgcolor:#CCCCCC;
+  @color: black;
   @hover:grey;
   .tree{
     background-color: @bgcolor;
@@ -76,6 +81,12 @@
       .item:hover{
         color:@hover;
         cursor:pointer;
+      }
+      button{
+        color:black;
+        background-color: #658AAB;
+        box-shadow: none;
+        border: none;
       }
     }
   }

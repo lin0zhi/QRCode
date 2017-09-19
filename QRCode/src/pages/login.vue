@@ -132,6 +132,7 @@ export default {
   methods: {
     // 提交输入结果
     submit: function () {
+      this.tips.inhint = ''
       if (this.model.isLogin) {
         if (!(this.valitor('userName', this.form.userName) && this.valitor('password', this.form.password))) {
           return false
@@ -143,6 +144,8 @@ export default {
         this.$http.post('/debug/login', this.form).then(function (data) {
           if (data.data['message'] === 'sucess') {
             this.tips.inhint = '登录成功'
+            this.glob.isLoged = true
+            this.glob.userName = this.form.userName
           } else if (data.data['message'] === 'invalid') {
             this.tips.inhint = '账户不存在或密码错误'
           } else if (data.data['message'] === 'overTimes') {
@@ -292,9 +295,10 @@ export default {
   @bgcolor:#336699;
   form{
     background-color: @bgcolor;
-    width:20%;
-    min-width: 350px;
-    margin-left: 40%;
+    width:550px;
+    height: 500px;
+    min-width: 550px;
+    margin:auto;
     padding-top:20px;
     border-radius: 10px;
     position: relative;
@@ -346,7 +350,6 @@ export default {
           right: -2px;
           bottom: 0px;
           z-index: 1;
-          
           opacity: 0.9; 
           -webkit-filter: blur(2px);
         }

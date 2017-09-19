@@ -21,5 +21,6 @@ export default {
   -webkit-font-smoothing: antialiased;
   text-align: center;
   height:100%;
+ /* background-color: #00C8DC;*/
 }
 </style>
